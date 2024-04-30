@@ -44,7 +44,8 @@ ingress:
   hosts:
     - host: example.com
       paths:
-        - /
+        - path: /
+          pathType: ImplementationSpecific
   tls:
    - secretName: metaphor-php-tls
      hosts:
