@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metaphor-php
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://chartmuseum.mgmt-20.kubefirst.com'
+    targetRevision: 0.1.1
+    helm:
+      parameters:
+        - name: image.tag
+          value: metaphor-php1
+      values: |-
+        replicaCount: 1
+        ingress:
+          className: nginx
+          enabled: true
+          annotations:
+            cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+          hosts:
+            - host: metaphor-php-development.yourdomain.com
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - secretName: metaphor-php-tls
+              hosts:
+                - metaphor-php-development.yourdomain.com
+    chart: metaphor-php
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: development
